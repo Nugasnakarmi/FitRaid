@@ -10,6 +10,10 @@ export default function WorkoutSessionScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const tintColor = useThemeColor({}, 'tint');
   const backgroundColor = useThemeColor({}, 'background');
+  const metaTextColor = useThemeColor(
+    { light: '#fff', dark: '#151718' },
+    'background'
+  );
 
   const group = muscleGroups.find((g) => g.id === id);
 
@@ -44,12 +48,12 @@ export default function WorkoutSessionScreen() {
           </ThemedText>
           <ThemedView style={styles.exerciseMeta}>
             <ThemedView style={[styles.metaBadge, { backgroundColor: tintColor }]}>
-              <ThemedText style={styles.metaText}>
+              <ThemedText style={[styles.metaText, { color: metaTextColor }]}>
                 {exercise.sets} sets
               </ThemedText>
             </ThemedView>
             <ThemedView style={[styles.metaBadge, { backgroundColor: tintColor }]}>
-              <ThemedText style={styles.metaText}>
+              <ThemedText style={[styles.metaText, { color: metaTextColor }]}>
                 {exercise.reps} reps
               </ThemedText>
             </ThemedView>
@@ -120,7 +124,6 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   metaText: {
-    color: '#fff',
     fontSize: 13,
     fontWeight: '600',
   },
