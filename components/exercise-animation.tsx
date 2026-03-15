@@ -26,8 +26,8 @@ export function ExerciseAnimation({ images }: ExerciseAnimationProps) {
   useEffect(() => {
     opacity.value = withRepeat(
       withSequence(
-        withTiming(1, { duration: FRAME_DURATION, easing: Easing.inOut(Easing.ease) }),
         withTiming(0, { duration: FRAME_DURATION, easing: Easing.inOut(Easing.ease) }),
+        withTiming(1, { duration: FRAME_DURATION, easing: Easing.inOut(Easing.ease) }),
       ),
       -1,
       false,
