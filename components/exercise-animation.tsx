@@ -9,6 +9,7 @@ import Animated, {
   withTiming,
   Easing,
 } from 'react-native-reanimated';
+import { useThemeColor } from '@/hooks/use-theme-color';
 
 const FRAME_DURATION = 1200;
 
@@ -22,6 +23,7 @@ type ExerciseAnimationProps = {
  */
 export function ExerciseAnimation({ images }: ExerciseAnimationProps) {
   const opacity = useSharedValue(1);
+  const backgroundColor = useThemeColor({}, 'background');
 
   useEffect(() => {
     opacity.value = withRepeat(
@@ -43,7 +45,7 @@ export function ExerciseAnimation({ images }: ExerciseAnimationProps) {
   }));
 
   return (
-    <Animated.View style={styles.container}>
+    <Animated.View style={[styles.container, { backgroundColor }]}>
       <Animated.View style={[styles.layer, backStyle]}>
         <Image source={{ uri: images[1] }} style={styles.image} contentFit="contain" />
       </Animated.View>
@@ -60,7 +62,6 @@ const styles = StyleSheet.create({
     height: 200,
     borderRadius: 8,
     overflow: 'hidden',
-    backgroundColor: '#f5f5f5',
   },
   layer: {
     ...StyleSheet.absoluteFillObject,
