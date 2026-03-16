@@ -23,6 +23,7 @@ async function getDb(): Promise<SQLite.SQLiteDatabase> {
 
   if (!dbInitPromise) {
     dbInitPromise = (async () => {
+      // Store timestamps in UTC ISO-8601 (Z) for consistent parsing across platforms.
       const db = await SQLite.openDatabaseAsync(DB_NAME);
       await db.execAsync(`
         CREATE TABLE IF NOT EXISTS workout_logs (
