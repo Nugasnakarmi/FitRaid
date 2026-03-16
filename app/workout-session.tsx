@@ -4,6 +4,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { ExerciseAnimation } from '@/components/exercise-animation';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { WorkoutLogger } from '@/components/workout-logger';
 import { muscleGroups } from '@/constants/workouts';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
@@ -62,6 +63,10 @@ export default function WorkoutSessionScreen() {
               </ThemedText>
             </ThemedView>
           </ThemedView>
+          <WorkoutLogger
+            muscleGroupId={group.id}
+            exerciseName={exercise.name}
+          />
         </ThemedView>
       ))}
 
