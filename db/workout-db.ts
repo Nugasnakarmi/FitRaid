@@ -26,7 +26,7 @@ async function getDb(): Promise<SQLite.SQLiteDatabase> {
         sets INTEGER NOT NULL DEFAULT 0,
         reps INTEGER NOT NULL DEFAULT 0,
         weight REAL,
-        notes TEXT DEFAULT '',
+        notes TEXT NOT NULL DEFAULT '',
         created_at TEXT NOT NULL DEFAULT (datetime('now'))
       );
     `);

@@ -169,7 +169,7 @@ export function WorkoutLogger({ muscleGroupId, exerciseName }: Props) {
                     </ThemedText>
                     <ThemedText
                       style={[styles.logItemDate, { color: subtleText }]}>
-                      {new Date(log.createdAt + 'Z').toLocaleDateString()}
+                      {new Date(log.createdAt).toLocaleDateString()}
                     </ThemedText>
                   </ThemedView>
                   <Pressable
