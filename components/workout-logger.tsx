@@ -178,6 +178,7 @@ export function WorkoutLogger({ muscleGroupId, exerciseName }: Props) {
                   <ThemedView style={styles.logItemContent}>
                     <ThemedText style={styles.logItemText}>
                       {log.sets} sets × {log.reps} reps
+                      {/* Show zero-weight entries explicitly; only hide when null/undefined */}
                       {log.weight != null ? ` @ ${log.weight} lbs` : ''}
                     </ThemedText>
                     <ThemedText

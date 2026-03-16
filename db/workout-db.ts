@@ -33,7 +33,7 @@ async function getDb(): Promise<SQLite.SQLiteDatabase> {
           reps INTEGER NOT NULL DEFAULT 0,
           weight REAL,
           notes TEXT NOT NULL DEFAULT '',
-          created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
+          created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ','now'))
         );
       `);
       _db = db;
