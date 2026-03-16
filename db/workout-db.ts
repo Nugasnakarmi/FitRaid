@@ -14,24 +14,34 @@ export type WorkoutLog = {
 };
 
 let _db: SQLite.SQLiteDatabase | null = null;
+let dbInitPromise: Promise<SQLite.SQLiteDatabase> | null = null;
 
 async function getDb(): Promise<SQLite.SQLiteDatabase> {
-  if (!_db) {
-    _db = await SQLite.openDatabaseAsync(DB_NAME);
-    await _db.execAsync(`
-      CREATE TABLE IF NOT EXISTS workout_logs (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        muscle_group_id TEXT NOT NULL,
-        exercise_name TEXT NOT NULL,
-        sets INTEGER NOT NULL DEFAULT 0,
-        reps INTEGER NOT NULL DEFAULT 0,
-        weight REAL,
-        notes TEXT NOT NULL DEFAULT '',
-        created_at TEXT NOT NULL DEFAULT (datetime('now'))
-      );
-    `);
+  if (_db) {
+    return _db;
   }
-  return _db;
+
+  if (!dbInitPromise) {
+    dbInitPromise = (async () => {
+      const db = await SQLite.openDatabaseAsync(DB_NAME);
+      await db.execAsync(`
+        CREATE TABLE IF NOT EXISTS workout_logs (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          muscle_group_id TEXT NOT NULL,
+          exercise_name TEXT NOT NULL,
+          sets INTEGER NOT NULL DEFAULT 0,
+          reps INTEGER NOT NULL DEFAULT 0,
+          weight REAL,
+          notes TEXT NOT NULL DEFAULT '',
+          created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
+        );
+      `);
+      _db = db;
+      return db;
+    })();
+  }
+
+  return dbInitPromise;
 }
 
 export async function addWorkoutLog(

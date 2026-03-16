@@ -22,6 +22,7 @@ export function WorkoutLogger({ muscleGroupId, exerciseName }: Props) {
   const [weight, setWeight] = useState('');
   const [logs, setLogs] = useState<WorkoutLog[]>([]);
   const [expanded, setExpanded] = useState(false);
+  const [hasLoaded, setHasLoaded] = useState(false);
 
   const tintColor = useThemeColor({}, 'tint');
   const inputBg = useThemeColor(
@@ -42,11 +43,14 @@ export function WorkoutLogger({ muscleGroupId, exerciseName }: Props) {
   const loadLogs = useCallback(async () => {
     const data = await getLogsForExercise(muscleGroupId, exerciseName);
     setLogs(data);
+    setHasLoaded(true);
   }, [muscleGroupId, exerciseName]);
 
   useEffect(() => {
-    loadLogs();
-  }, [loadLogs]);
+    if (expanded && !hasLoaded) {
+      loadLogs();
+    }
+  }, [expanded, hasLoaded, loadLogs]);
 
   const handleSave = async () => {
     const setsNum = parseInt(sets, 10);
@@ -81,7 +85,10 @@ export function WorkoutLogger({ muscleGroupId, exerciseName }: Props) {
     <ThemedView style={styles.container}>
       <Pressable
         onPress={() => setExpanded(!expanded)}
-        style={styles.toggleRow}>
+        style={styles.toggleRow}
+        accessibilityRole="button"
+        accessibilityLabel={`${expanded ? 'Hide' : 'Show'} workout logger for ${exerciseName}`}
+        accessibilityState={{ expanded }}>
         <ThemedText style={[styles.toggleText, { color: tintColor }]}>
           {expanded ? '▾ Hide Logger' : '▸ Log Workout'}
         </ThemedText>
@@ -158,29 +165,38 @@ export function WorkoutLogger({ muscleGroupId, exerciseName }: Props) {
                 style={[styles.logListTitle, { color: subtleText }]}>
                 Recent Logs
               </ThemedText>
-              {logs.map((log) => (
-                <ThemedView
-                  key={log.id}
-                  style={[styles.logItem, { borderColor: inputBorder }]}>
+              {logs.map((log) => {
+                const parsed = new Date(log.createdAt);
+                const dateLabel = Number.isNaN(parsed.getTime())
+                  ? log.createdAt
+                  : parsed.toLocaleDateString();
+
+                return (
+                  <ThemedView
+                    key={log.id}
+                    style={[styles.logItem, { borderColor: inputBorder }]}>
                   <ThemedView style={styles.logItemContent}>
                     <ThemedText style={styles.logItemText}>
                       {log.sets} sets × {log.reps} reps
-                      {log.weight ? ` @ ${log.weight} lbs` : ''}
+                      {log.weight != null ? ` @ ${log.weight} lbs` : ''}
                     </ThemedText>
                     <ThemedText
                       style={[styles.logItemDate, { color: subtleText }]}>
-                      {new Date(log.createdAt).toLocaleDateString()}
+                        {dateLabel}
                     </ThemedText>
                   </ThemedView>
                   <Pressable
                     onPress={() => handleDelete(log.id)}
-                    hitSlop={8}>
+                    hitSlop={8}
+                    accessibilityRole="button"
+                    accessibilityLabel="Delete workout log entry">
                     <ThemedText style={{ color: dangerColor, fontSize: 16 }}>
                       ✕
                     </ThemedText>
                   </Pressable>
                 </ThemedView>
-              ))}
+                );
+              })}
             </ThemedView>
           )}
         </ThemedView>
