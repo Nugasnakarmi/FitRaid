@@ -1,6 +1,7 @@
 import { ScrollView, StyleSheet } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 
+import { ExerciseAnimation } from '@/components/exercise-animation';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { muscleGroups } from '@/constants/workouts';
@@ -43,6 +44,9 @@ export default function WorkoutSessionScreen() {
               {exercise.name}
             </ThemedText>
           </ThemedView>
+          {exercise.images && (
+            <ExerciseAnimation images={exercise.images} />
+          )}
           <ThemedText style={styles.exerciseDescription}>
             {exercise.description}
           </ThemedText>
