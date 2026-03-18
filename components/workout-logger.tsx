@@ -25,6 +25,10 @@ export function WorkoutLogger({ muscleGroupId, exerciseName }: Props) {
   const [hasLoaded, setHasLoaded] = useState(false);
 
   const tintColor = useThemeColor({}, 'tint');
+  const saveButtonTextColor = useThemeColor(
+    { light: '#fff', dark: '#11181C' },
+    'text',
+  );
   const inputBg = useThemeColor(
     { light: '#f0f4f8', dark: '#1e2428' },
     'background',
@@ -156,7 +160,7 @@ export function WorkoutLogger({ muscleGroupId, exerciseName }: Props) {
               { backgroundColor: tintColor, opacity: pressed ? 0.8 : 1 },
             ]}
             onPress={handleSave}>
-            <ThemedText style={styles.saveButtonText}>Save Entry</ThemedText>
+            <ThemedText style={[styles.saveButtonText, { color: saveButtonTextColor }]}>Save Entry</ThemedText>
           </Pressable>
 
           {logs.length > 0 && (
@@ -247,7 +251,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   saveButtonText: {
-    color: '#fff',
     fontWeight: '700',
     fontSize: 15,
   },
