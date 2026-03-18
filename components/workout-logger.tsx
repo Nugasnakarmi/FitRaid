@@ -9,6 +9,7 @@ import {
   getLogsForExercise,
   type WorkoutLog,
 } from '@/db/workout-db';
+import { useSettings } from '@/contexts/settings-context';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
 type Props = {
@@ -24,6 +25,7 @@ export function WorkoutLogger({ muscleGroupId, exerciseName }: Props) {
   const [expanded, setExpanded] = useState(false);
   const [hasLoaded, setHasLoaded] = useState(false);
 
+  const { weightUnit } = useSettings();
   const tintColor = useThemeColor({}, 'tint');
   const saveButtonTextColor = useThemeColor(
     { light: '#fff', dark: '#11181C' },
@@ -137,7 +139,7 @@ export function WorkoutLogger({ muscleGroupId, exerciseName }: Props) {
             </ThemedView>
             <ThemedView style={styles.inputGroup}>
               <ThemedText style={[styles.inputLabel, { color: subtleText }]}>
-                Weight
+                Weight ({weightUnit})
               </ThemedText>
               <TextInput
                 style={[
@@ -147,7 +149,7 @@ export function WorkoutLogger({ muscleGroupId, exerciseName }: Props) {
                 value={weight}
                 onChangeText={setWeight}
                 keyboardType="decimal-pad"
-                placeholder="lbs"
+                placeholder="0"
                 placeholderTextColor={subtleText}
                 maxLength={6}
               />
@@ -183,7 +185,7 @@ export function WorkoutLogger({ muscleGroupId, exerciseName }: Props) {
                     <ThemedText style={styles.logItemText}>
                       {log.sets} sets × {log.reps} reps
                       {/* Show zero-weight entries explicitly; only hide when null/undefined */}
-                      {log.weight != null ? ` @ ${log.weight} lbs` : ''}
+                      {log.weight != null ? ` @ ${log.weight} ${weightUnit}` : ''}
                     </ThemedText>
                     <ThemedText
                       style={[styles.logItemDate, { color: subtleText }]}>
