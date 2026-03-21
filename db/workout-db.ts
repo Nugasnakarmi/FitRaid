@@ -124,6 +124,41 @@ export async function deleteWorkoutLog(id: number): Promise<void> {
   await db.runAsync('DELETE FROM workout_logs WHERE id = ?', id);
 }
 
+export type MuscleGroupStat = {
+  muscleGroupId: string;
+  logCount: number;
+  totalSets: number;
+};
+
+export async function getMuscleGroupStats(): Promise<MuscleGroupStat[]> {
+  const db = await getDb();
+  return db.getAllAsync<MuscleGroupStat>(
+    `SELECT muscle_group_id AS muscleGroupId,
+            COUNT(*) AS logCount,
+            SUM(sets) AS totalSets
+     FROM workout_logs
+     GROUP BY muscle_group_id
+     ORDER BY logCount DESC`,
+  );
+}
+
+export async function getTotalXP(): Promise<number> {
+  const xpStr = await getPreference('user_xp');
+  return parseInt(xpStr ?? '0', 10) || 0;
+}
+
+export async function addXP(amount: number): Promise<number> {
+  const db = await getDb();
+  const current = await getPreference('user_xp');
+  const newXP = (parseInt(current ?? '0', 10) || 0) + amount;
+  await db.runAsync(
+    'INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value',
+    'user_xp',
+    String(newXP),
+  );
+  return newXP;
+}
+
 export async function getPreference(key: string): Promise<string | null> {
   const db = await getDb();
   const row = await db.getFirstAsync<{ value: string }>(
