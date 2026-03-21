@@ -17,6 +17,7 @@ export type MuscleGroup = {
   id: string;
   name: string;
   icon: string;
+  coverImage: string;
   exercises: Exercise[];
 };
 
@@ -25,6 +26,7 @@ export const muscleGroups: MuscleGroup[] = [
     id: 'full-body',
     name: 'Full Body',
     icon: '🏋️',
+    coverImage: `${IMG_BASE}/Barbell_Deadlift/0.jpg`,
     exercises: [
       { name: 'Deadlift', sets: 4, reps: '6-8', description: 'Lift barbell from ground to hip level with a flat back.', images: exerciseImages('Barbell_Deadlift') },
       { name: 'Clean and Press', sets: 3, reps: '6-8', description: 'Lift barbell to shoulders, then press overhead.', images: exerciseImages('Clean_and_Press') },
@@ -38,6 +40,7 @@ export const muscleGroups: MuscleGroup[] = [
     id: 'abs',
     name: 'Abs',
     icon: '🔥',
+    coverImage: `${IMG_BASE}/Hanging_Leg_Raise/0.jpg`,
     exercises: [
       { name: 'Plank', sets: 3, reps: '30-60 sec', description: 'Hold a push-up position with a straight body.', images: exerciseImages('Plank') },
       { name: 'Hanging Leg Raise', sets: 3, reps: '10-15', description: 'Hang from a bar and raise legs to a 90-degree angle.', images: exerciseImages('Hanging_Leg_Raise') },
@@ -51,6 +54,7 @@ export const muscleGroups: MuscleGroup[] = [
     id: 'triceps',
     name: 'Triceps',
     icon: '💪',
+    coverImage: `${IMG_BASE}/Dips_-_Triceps_Version/0.jpg`,
     exercises: [
       { name: 'Tricep Dips', sets: 3, reps: '8-12', description: 'Lower and raise your body on parallel bars, focusing on triceps.', images: exerciseImages('Dips_-_Triceps_Version') },
       { name: 'Triceps Rope Pushdown', sets: 3, reps: '10-15', description: 'Push a rope attachment down on a cable machine.', images: exerciseImages('Triceps_Pushdown_-_Rope_Attachment') },
@@ -64,6 +68,7 @@ export const muscleGroups: MuscleGroup[] = [
     id: 'back',
     name: 'Back',
     icon: '🔙',
+    coverImage: `${IMG_BASE}/Pullups/0.jpg`,
     exercises: [
       { name: 'Pull-Ups', sets: 4, reps: '6-10', description: 'Hang from a bar and pull yourself up until your chin clears it.', images: exerciseImages('Pullups') },
       { name: 'Barbell Row', sets: 4, reps: '8-10', description: 'Bend over and row a barbell toward your lower chest.', images: exerciseImages('Bent_Over_Barbell_Row') },
@@ -77,6 +82,7 @@ export const muscleGroups: MuscleGroup[] = [
     id: 'quadriceps',
     name: 'Quadriceps',
     icon: '🦵',
+    coverImage: `${IMG_BASE}/Barbell_Squat/0.jpg`,
     exercises: [
       { name: 'Barbell Squat', sets: 4, reps: '6-10', description: 'Place barbell on upper back, squat down and drive up.', images: exerciseImages('Barbell_Squat') },
       { name: 'Leg Press', sets: 4, reps: '10-12', description: 'Push a weighted platform away using your legs.', images: exerciseImages('Leg_Press') },
@@ -90,6 +96,7 @@ export const muscleGroups: MuscleGroup[] = [
     id: 'hamstrings',
     name: 'Hamstrings',
     icon: '🦿',
+    coverImage: `${IMG_BASE}/Romanian_Deadlift/0.jpg`,
     exercises: [
       { name: 'Romanian Deadlift', sets: 4, reps: '8-10', description: 'Hinge at the hips with a barbell, keeping legs slightly bent.', images: exerciseImages('Romanian_Deadlift') },
       { name: 'Leg Curl', sets: 3, reps: '10-12', description: 'Curl your legs on a machine to target the hamstrings.', images: exerciseImages('Seated_Leg_Curl') },
@@ -102,6 +109,7 @@ export const muscleGroups: MuscleGroup[] = [
     id: 'forearms',
     name: 'Forearms',
     icon: '🤜',
+    coverImage: `${IMG_BASE}/Farmers_Walk/0.jpg`,
     exercises: [
       { name: 'Wrist Curl', sets: 3, reps: '15-20', description: 'Rest forearms on a bench and curl a barbell with your wrists.', images: exerciseImages('Palms-Up_Barbell_Wrist_Curl_Over_A_Bench') },
       { name: 'Reverse Wrist Curl', sets: 3, reps: '15-20', description: 'Same as wrist curl but with palms facing down.', images: exerciseImages('Palms-Down_Wrist_Curl_Over_A_Bench') },
@@ -113,6 +121,7 @@ export const muscleGroups: MuscleGroup[] = [
     id: 'chest',
     name: 'Chest',
     icon: '🫁',
+    coverImage: `${IMG_BASE}/Barbell_Bench_Press_-_Medium_Grip/0.jpg`,
     exercises: [
       { name: 'Flat Bench Press', sets: 4, reps: '6-10', description: 'Lie on a flat bench and press a barbell upward.', images: exerciseImages('Barbell_Bench_Press_-_Medium_Grip') },
       { name: 'Incline Dumbbell Press', sets: 3, reps: '8-12', description: 'Press dumbbells on an incline bench to target upper chest.', images: exerciseImages('Incline_Dumbbell_Press') },
@@ -126,6 +135,7 @@ export const muscleGroups: MuscleGroup[] = [
     id: 'biceps',
     name: 'Biceps',
     icon: '💪',
+    coverImage: `${IMG_BASE}/Barbell_Curl/0.jpg`,
     exercises: [
       { name: 'Barbell Curl', sets: 4, reps: '8-12', description: 'Curl a barbell toward your shoulders while standing.', images: exerciseImages('Barbell_Curl') },
       { name: 'Hammer Curl', sets: 3, reps: '10-12', description: 'Curl dumbbells with a neutral grip to target the brachialis.', images: exerciseImages('Hammer_Curls') },
@@ -139,6 +149,7 @@ export const muscleGroups: MuscleGroup[] = [
     id: 'shoulders',
     name: 'Shoulders',
     icon: '🙌',
+    coverImage: `${IMG_BASE}/Standing_Military_Press/0.jpg`,
     exercises: [
       { name: 'Overhead Press', sets: 4, reps: '6-10', description: 'Press a barbell or dumbbells overhead while standing.', images: exerciseImages('Standing_Military_Press') },
       { name: 'Lateral Raise', sets: 3, reps: '12-15', description: 'Raise dumbbells to your sides up to shoulder level.', images: exerciseImages('Side_Lateral_Raise') },
@@ -151,6 +162,7 @@ export const muscleGroups: MuscleGroup[] = [
     id: 'lower-back',
     name: 'Lower Back',
     icon: '🔻',
+    coverImage: `${IMG_BASE}/Hyperextensions_Back_Extensions/0.jpg`,
     exercises: [
       { name: 'Back Extension', sets: 3, reps: '12-15', description: 'On a Roman chair, lower and raise your torso.', images: exerciseImages('Hyperextensions_Back_Extensions') },
       { name: 'Romanian Deadlift', sets: 4, reps: '8-10', description: 'Hinge at the hips with a barbell, keeping legs slightly bent.', images: exerciseImages('Romanian_Deadlift') },
@@ -162,6 +174,7 @@ export const muscleGroups: MuscleGroup[] = [
     id: 'glutes',
     name: 'Glutes',
     icon: '🍑',
+    coverImage: `${IMG_BASE}/Barbell_Hip_Thrust/0.jpg`,
     exercises: [
       { name: 'Hip Thrust', sets: 4, reps: '8-12', description: 'Sit against a bench and thrust a barbell upward with your hips.', images: exerciseImages('Barbell_Hip_Thrust') },
       { name: 'Glute Bridge', sets: 3, reps: '12-15', description: 'Lie on your back and raise your hips with a barbell.', images: exerciseImages('Barbell_Glute_Bridge') },
@@ -174,6 +187,7 @@ export const muscleGroups: MuscleGroup[] = [
     id: 'calves',
     name: 'Calves',
     icon: '🦶',
+    coverImage: `${IMG_BASE}/Standing_Calf_Raises/0.jpg`,
     exercises: [
       { name: 'Standing Calf Raise', sets: 4, reps: '12-15', description: 'Stand on a platform and raise your heels upward.', images: exerciseImages('Standing_Calf_Raises') },
       { name: 'Seated Calf Raise', sets: 3, reps: '15-20', description: 'Raise your heels while seated with weight on your knees.', images: exerciseImages('Seated_Calf_Raise') },
@@ -185,6 +199,7 @@ export const muscleGroups: MuscleGroup[] = [
     id: 'trapezius',
     name: 'Trapezius',
     icon: '🔺',
+    coverImage: `${IMG_BASE}/Barbell_Shrug/0.jpg`,
     exercises: [
       { name: 'Barbell Shrug', sets: 4, reps: '10-15', description: 'Shrug your shoulders upward while holding a barbell.', images: exerciseImages('Barbell_Shrug') },
       { name: 'Dumbbell Shrug', sets: 3, reps: '12-15', description: 'Shrug your shoulders while holding dumbbells at your sides.', images: exerciseImages('Dumbbell_Shrug') },

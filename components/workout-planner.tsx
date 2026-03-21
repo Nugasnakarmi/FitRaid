@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet, useWindowDimensions } from 'react-native';
+import { Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 
 import { ThemedText } from '@/components/themed-text';
@@ -12,10 +13,6 @@ const GRID_COLUMNS = 2;
 export function WorkoutPlanner() {
   const router = useRouter();
   const tintColor = useThemeColor({}, 'tint');
-  const cardBg = useThemeColor(
-    { light: '#f0f4f8', dark: '#1e2428' },
-    'background',
-  );
   const subtleText = useThemeColor(
     { light: '#687076', dark: '#9BA1A6' },
     'text',
@@ -42,8 +39,7 @@ export function WorkoutPlanner() {
               styles.card,
               {
                 width: cardSize,
-                height: cardSize,
-                backgroundColor: cardBg,
+                height: cardSize * 1.05,
                 borderColor: pressed ? tintColor : 'transparent',
                 transform: [{ scale: pressed ? 0.96 : 1 }],
               },
@@ -51,13 +47,23 @@ export function WorkoutPlanner() {
             onPress={() => router.push(`/workout-session?id=${group.id}`)}
             accessibilityRole="button"
             accessibilityLabel={`Start ${group.name} workout`}>
-            <ThemedText style={styles.cardIcon}>{group.icon}</ThemedText>
-            <ThemedText type="defaultSemiBold" style={styles.cardName}>
-              {group.name}
-            </ThemedText>
-            <ThemedText style={[styles.cardCount, { color: subtleText }]}>
-              {group.exercises.length} exercises
-            </ThemedText>
+            {/* expo-image handles memory + disk caching automatically */}
+            <Image
+              source={{ uri: group.coverImage }}
+              style={StyleSheet.absoluteFill}
+              contentFit="cover"
+              cachePolicy="memory-disk"
+            />
+            {/* Dark overlay for readability */}
+            <View style={styles.cardOverlay} />
+            {/* Bottom label area */}
+            <View style={styles.cardFooter}>
+              <ThemedText style={styles.cardIcon}>{group.icon}</ThemedText>
+              <ThemedText style={styles.cardName}>{group.name}</ThemedText>
+              <ThemedText style={styles.cardCount}>
+                {group.exercises.length} exercises
+              </ThemedText>
+            </View>
           </Pressable>
         ))}
       </ThemedView>
@@ -83,20 +89,34 @@ const styles = StyleSheet.create({
     gap: CARD_GAP,
   },
   card: {
-    justifyContent: 'center',
-    alignItems: 'center',
     borderRadius: 16,
+    overflow: 'hidden',
     borderWidth: 2,
-    gap: 6,
+    backgroundColor: '#1a2a3a',
+    justifyContent: 'flex-end',
+  },
+  cardOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.38)',
+  },
+  cardFooter: {
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    gap: 2,
+    backgroundColor: 'rgba(0,0,0,0.42)',
   },
   cardIcon: {
-    fontSize: 40,
+    fontSize: 28,
+    color: '#fff',
   },
   cardName: {
     fontSize: 15,
-    textAlign: 'center',
+    fontWeight: '700',
+    color: '#fff',
+    letterSpacing: 0.2,
   },
   cardCount: {
     fontSize: 12,
+    color: 'rgba(255,255,255,0.75)',
   },
 });

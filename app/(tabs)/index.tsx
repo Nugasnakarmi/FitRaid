@@ -1,11 +1,24 @@
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { WorkoutPlanner } from '@/components/workout-planner';
+import { useSettings } from '@/contexts/settings-context';
+import { useThemeColor } from '@/hooks/use-theme-color';
 
 export default function HomeScreen() {
+  const { weightUnit, toggleWeightUnit } = useSettings();
+  const tintColor = useThemeColor({}, 'tint');
+  const inactiveBg = useThemeColor(
+    { light: '#e4e9ef', dark: '#2a2f35' },
+    'background',
+  );
+  const inactiveText = useThemeColor(
+    { light: '#687076', dark: '#9BA1A6' },
+    'text',
+  );
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#0a7ea4', dark: '#0d3b4f' }}
@@ -18,8 +31,45 @@ export default function HomeScreen() {
           </ThemedText>
         </View>
       }>
-      <ThemedView style={styles.titleContainer}>
+      <ThemedView style={styles.titleRow}>
         <ThemedText type="title">{"Let's Train 💪"}</ThemedText>
+        <Pressable
+          onPress={toggleWeightUnit}
+          accessibilityRole="button"
+          accessibilityLabel={`Weight unit: ${weightUnit}. Tap to switch to ${weightUnit === 'lbs' ? 'kg' : 'lbs'}`}>
+          <ThemedView style={styles.unitToggle}>
+            <ThemedView
+              style={[
+                styles.unitOption,
+                weightUnit === 'lbs'
+                  ? { backgroundColor: tintColor }
+                  : { backgroundColor: inactiveBg },
+              ]}>
+              <ThemedText
+                style={[
+                  styles.unitOptionText,
+                  { color: weightUnit === 'lbs' ? '#fff' : inactiveText },
+                ]}>
+                lbs
+              </ThemedText>
+            </ThemedView>
+            <ThemedView
+              style={[
+                styles.unitOption,
+                weightUnit === 'kg'
+                  ? { backgroundColor: tintColor }
+                  : { backgroundColor: inactiveBg },
+              ]}>
+              <ThemedText
+                style={[
+                  styles.unitOptionText,
+                  { color: weightUnit === 'kg' ? '#fff' : inactiveText },
+                ]}>
+                kg
+              </ThemedText>
+            </ThemedView>
+          </ThemedView>
+        </Pressable>
       </ThemedView>
       <WorkoutPlanner />
     </ParallaxScrollView>
@@ -27,10 +77,11 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  titleRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    justifyContent: 'space-between',
+    marginBottom: 4,
   },
   headerContent: {
     flex: 1,
@@ -51,5 +102,20 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: 'rgba(255,255,255,0.85)',
     fontWeight: '500',
+  },
+  unitToggle: {
+    flexDirection: 'row',
+    borderRadius: 20,
+    overflow: 'hidden',
+    gap: 2,
+  },
+  unitOption: {
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 20,
+  },
+  unitOptionText: {
+    fontSize: 13,
+    fontWeight: '700',
   },
 });

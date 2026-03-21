@@ -9,6 +9,7 @@ export type WorkoutLog = {
   sets: number;
   reps: number;
   weight: number | null;
+  weightUnit: string;
   notes: string;
   createdAt: string;
 };
@@ -33,10 +34,27 @@ async function getDb(): Promise<SQLite.SQLiteDatabase> {
           sets INTEGER NOT NULL DEFAULT 0,
           reps INTEGER NOT NULL DEFAULT 0,
           weight REAL,
+          weight_unit TEXT NOT NULL DEFAULT 'lbs',
           notes TEXT NOT NULL DEFAULT '',
           created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ','now'))
         );
+        CREATE TABLE IF NOT EXISTS settings (
+          key TEXT PRIMARY KEY,
+          value TEXT NOT NULL
+        );
       `);
+      // Migration: add weight_unit column to existing databases (no-op if it already exists)
+      try {
+        await db.execAsync(
+          `ALTER TABLE workout_logs ADD COLUMN weight_unit TEXT NOT NULL DEFAULT 'lbs'`,
+        );
+      } catch (e) {
+        // SQLite throws when the column already exists; any other error is unexpected
+        const msg = e instanceof Error ? e.message : String(e);
+        if (!msg.includes('duplicate column name')) {
+          throw e;
+        }
+      }
       _db = db;
       return db;
     })();
@@ -51,17 +69,19 @@ export async function addWorkoutLog(
   sets: number,
   reps: number,
   weight: number | null = null,
+  weightUnit: string = 'lbs',
   notes: string = '',
 ): Promise<number> {
   const db = await getDb();
   const result = await db.runAsync(
-    `INSERT INTO workout_logs (muscle_group_id, exercise_name, sets, reps, weight, notes)
-     VALUES (?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO workout_logs (muscle_group_id, exercise_name, sets, reps, weight, weight_unit, notes)
+     VALUES (?, ?, ?, ?, ?, ?, ?)`,
     muscleGroupId,
     exerciseName,
     sets,
     reps,
     weight,
+    weightUnit,
     notes,
   );
   return result.lastInsertRowId;
@@ -74,7 +94,7 @@ export async function getLogsForExercise(
   const db = await getDb();
   return db.getAllAsync<WorkoutLog>(
     `SELECT id, muscle_group_id AS muscleGroupId, exercise_name AS exerciseName,
-            sets, reps, weight, notes, created_at AS createdAt
+            sets, reps, weight, weight_unit AS weightUnit, notes, created_at AS createdAt
      FROM workout_logs
      WHERE muscle_group_id = ? AND exercise_name = ?
      ORDER BY created_at DESC
@@ -90,7 +110,7 @@ export async function getLogsForMuscleGroup(
   const db = await getDb();
   return db.getAllAsync<WorkoutLog>(
     `SELECT id, muscle_group_id AS muscleGroupId, exercise_name AS exerciseName,
-            sets, reps, weight, notes, created_at AS createdAt
+            sets, reps, weight, weight_unit AS weightUnit, notes, created_at AS createdAt
      FROM workout_logs
      WHERE muscle_group_id = ?
      ORDER BY created_at DESC
@@ -102,4 +122,22 @@ export async function getLogsForMuscleGroup(
 export async function deleteWorkoutLog(id: number): Promise<void> {
   const db = await getDb();
   await db.runAsync('DELETE FROM workout_logs WHERE id = ?', id);
+}
+
+export async function getPreference(key: string): Promise<string | null> {
+  const db = await getDb();
+  const row = await db.getFirstAsync<{ value: string }>(
+    'SELECT value FROM settings WHERE key = ?',
+    key,
+  );
+  return row?.value ?? null;
+}
+
+export async function setPreference(key: string, value: string): Promise<void> {
+  const db = await getDb();
+  await db.runAsync(
+    'INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value',
+    key,
+    value,
+  );
 }
