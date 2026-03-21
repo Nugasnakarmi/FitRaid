@@ -5,10 +5,13 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { WorkoutPlanner } from '@/components/workout-planner';
 import { useSettings } from '@/contexts/settings-context';
+import { useXP } from '@/contexts/xp-context';
+import { getLevelTitle } from '@/constants/xp';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
 export default function HomeScreen() {
   const { weightUnit, toggleWeightUnit } = useSettings();
+  const { xpProgress, totalXP } = useXP();
   const tintColor = useThemeColor({}, 'tint');
   const inactiveBg = useThemeColor(
     { light: '#e4e9ef', dark: '#2a2f35' },
@@ -19,6 +22,9 @@ export default function HomeScreen() {
     'text',
   );
 
+  const level = xpProgress.level;
+  const progressFraction = Math.min(1, Math.max(0, xpProgress.fraction));
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#0a7ea4', dark: '#0d3b4f' }}
@@ -27,8 +33,14 @@ export default function HomeScreen() {
           <ThemedText style={styles.headerEmoji}>🏋️</ThemedText>
           <ThemedText style={styles.headerTitle}>FitRaid</ThemedText>
           <ThemedText style={styles.headerSubtitle}>
-            Your Personal Workout Companion
+            {getLevelTitle(level)} · Lv.{level}
           </ThemedText>
+          <View style={styles.xpBarContainer}>
+            <View style={styles.xpBarTrack}>
+              <View style={[styles.xpBarFill, { width: `${progressFraction * 100}%` }]} />
+            </View>
+            <ThemedText style={styles.xpText}>{totalXP} XP ⚡</ThemedText>
+          </View>
         </View>
       }>
       <ThemedView style={styles.titleRow}>
@@ -102,6 +114,29 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: 'rgba(255,255,255,0.85)',
     fontWeight: '500',
+  },
+  xpBarContainer: {
+    width: 180,
+    gap: 3,
+    marginTop: 4,
+    alignItems: 'flex-end',
+  },
+  xpBarTrack: {
+    width: '100%',
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: 'rgba(255,255,255,0.25)',
+    overflow: 'hidden',
+  },
+  xpBarFill: {
+    height: '100%',
+    borderRadius: 4,
+    backgroundColor: '#fff',
+  },
+  xpText: {
+    fontSize: 11,
+    color: 'rgba(255,255,255,0.8)',
+    fontWeight: '600',
   },
   unitToggle: {
     flexDirection: 'row',

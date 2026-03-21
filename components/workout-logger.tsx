@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, Pressable, StyleSheet, TextInput } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
@@ -10,7 +10,9 @@ import {
   type WorkoutLog,
 } from '@/db/workout-db';
 import { useSettings } from '@/contexts/settings-context';
+import { useXP } from '@/contexts/xp-context';
 import { useThemeColor } from '@/hooks/use-theme-color';
+import { XP_PER_SET } from '@/constants/xp';
 
 type Props = {
   muscleGroupId: string;
@@ -24,8 +26,11 @@ export function WorkoutLogger({ muscleGroupId, exerciseName }: Props) {
   const [logs, setLogs] = useState<WorkoutLog[]>([]);
   const [expanded, setExpanded] = useState(false);
   const [hasLoaded, setHasLoaded] = useState(false);
+  const [xpGained, setXpGained] = useState<number | null>(null);
+  const xpToastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const { weightUnit } = useSettings();
+  const { awardXP } = useXP();
   const tintColor = useThemeColor({}, 'tint');
   const saveButtonTextColor = useThemeColor(
     { light: '#fff', dark: '#11181C' },
@@ -58,6 +63,15 @@ export function WorkoutLogger({ muscleGroupId, exerciseName }: Props) {
     }
   }, [expanded, hasLoaded, loadLogs]);
 
+  // Clear the XP toast timer on unmount to avoid state updates after unmount.
+  useEffect(() => {
+    return () => {
+      if (xpToastTimer.current !== null) {
+        clearTimeout(xpToastTimer.current);
+      }
+    };
+  }, []);
+
   const handleSave = async () => {
     const setsNum = parseInt(sets, 10);
     const repsNum = parseInt(reps, 10);
@@ -67,6 +81,13 @@ export function WorkoutLogger({ muscleGroupId, exerciseName }: Props) {
     }
     const weightNum = weight ? parseFloat(weight) : null;
     await addWorkoutLog(muscleGroupId, exerciseName, setsNum, repsNum, weightNum, weightUnit);
+    const earned = setsNum * XP_PER_SET;
+    await awardXP(earned);
+    setXpGained(earned);
+    if (xpToastTimer.current !== null) {
+      clearTimeout(xpToastTimer.current);
+    }
+    xpToastTimer.current = setTimeout(() => setXpGained(null), 2000);
     setSets('');
     setReps('');
     setWeight('');
@@ -165,6 +186,14 @@ export function WorkoutLogger({ muscleGroupId, exerciseName }: Props) {
             <ThemedText style={[styles.saveButtonText, { color: saveButtonTextColor }]}>Save Entry</ThemedText>
           </Pressable>
 
+          {xpGained !== null && (
+            <ThemedView style={styles.xpToast}>
+              <ThemedText style={[styles.xpToastText, { color: tintColor }]}>
+                +{xpGained} XP ⚡
+              </ThemedText>
+            </ThemedView>
+          )}
+
           {logs.length > 0 && (
             <ThemedView style={styles.logList}>
               <ThemedText
@@ -255,6 +284,14 @@ const styles = StyleSheet.create({
   saveButtonText: {
     fontWeight: '700',
     fontSize: 15,
+  },
+  xpToast: {
+    alignItems: 'center',
+    paddingVertical: 4,
+  },
+  xpToastText: {
+    fontSize: 14,
+    fontWeight: '700',
   },
   logList: {
     gap: 6,
