@@ -1,4 +1,5 @@
-import { ImageBackground, Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 
 import { ThemedText } from '@/components/themed-text';
@@ -46,21 +47,23 @@ export function WorkoutPlanner() {
             onPress={() => router.push(`/workout-session?id=${group.id}`)}
             accessibilityRole="button"
             accessibilityLabel={`Start ${group.name} workout`}>
-            <ImageBackground
+            {/* expo-image handles memory + disk caching automatically */}
+            <Image
               source={{ uri: group.coverImage }}
-              style={styles.cardImage}
-              resizeMode="cover">
-              {/* Dark overlay for readability */}
-              <View style={styles.cardOverlay} />
-              {/* Bottom label area */}
-              <View style={styles.cardFooter}>
-                <ThemedText style={styles.cardIcon}>{group.icon}</ThemedText>
-                <ThemedText style={styles.cardName}>{group.name}</ThemedText>
-                <ThemedText style={styles.cardCount}>
-                  {group.exercises.length} exercises
-                </ThemedText>
-              </View>
-            </ImageBackground>
+              style={StyleSheet.absoluteFill}
+              contentFit="cover"
+              cachePolicy="memory-disk"
+            />
+            {/* Dark overlay for readability */}
+            <View style={styles.cardOverlay} />
+            {/* Bottom label area */}
+            <View style={styles.cardFooter}>
+              <ThemedText style={styles.cardIcon}>{group.icon}</ThemedText>
+              <ThemedText style={styles.cardName}>{group.name}</ThemedText>
+              <ThemedText style={styles.cardCount}>
+                {group.exercises.length} exercises
+              </ThemedText>
+            </View>
           </Pressable>
         ))}
       </ThemedView>
@@ -90,9 +93,6 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderWidth: 2,
     backgroundColor: '#1a2a3a',
-  },
-  cardImage: {
-    flex: 1,
     justifyContent: 'flex-end',
   },
   cardOverlay: {

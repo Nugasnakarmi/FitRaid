@@ -66,7 +66,7 @@ export function WorkoutLogger({ muscleGroupId, exerciseName }: Props) {
       return;
     }
     const weightNum = weight ? parseFloat(weight) : null;
-    await addWorkoutLog(muscleGroupId, exerciseName, setsNum, repsNum, weightNum);
+    await addWorkoutLog(muscleGroupId, exerciseName, setsNum, repsNum, weightNum, weightUnit);
     setSets('');
     setReps('');
     setWeight('');
@@ -185,7 +185,7 @@ export function WorkoutLogger({ muscleGroupId, exerciseName }: Props) {
                     <ThemedText style={styles.logItemText}>
                       {log.sets} sets × {log.reps} reps
                       {/* Show zero-weight entries explicitly; only hide when null/undefined */}
-                      {log.weight != null ? ` @ ${log.weight} ${weightUnit}` : ''}
+                      {log.weight != null ? ` @ ${log.weight} ${log.weightUnit}` : ''}
                     </ThemedText>
                     <ThemedText
                       style={[styles.logItemDate, { color: subtleText }]}>

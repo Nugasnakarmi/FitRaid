@@ -35,9 +35,8 @@ export default function HomeScreen() {
         <ThemedText type="title">{"Let's Train 💪"}</ThemedText>
         <Pressable
           onPress={toggleWeightUnit}
-          accessibilityRole="switch"
-          accessibilityLabel="Toggle weight unit"
-          accessibilityValue={{ text: weightUnit }}>
+          accessibilityRole="button"
+          accessibilityLabel={`Weight unit: ${weightUnit}. Tap to switch to ${weightUnit === 'lbs' ? 'kg' : 'lbs'}`}>
           <ThemedView style={styles.unitToggle}>
             <ThemedView
               style={[

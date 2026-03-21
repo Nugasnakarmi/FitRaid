@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import { getPreference, setPreference } from '@/db/workout-db';
 
@@ -16,10 +16,13 @@ const SettingsContext = createContext<SettingsContextValue>({
 
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [weightUnit, setWeightUnit] = useState<WeightUnit>('lbs');
+  // Guard: if the user has already toggled before the DB load completes,
+  // don't let the async result overwrite their explicit choice.
+  const hasUserToggledRef = useRef(false);
 
   useEffect(() => {
     getPreference('weightUnit').then((val) => {
-      if (val === 'kg' || val === 'lbs') {
+      if (!hasUserToggledRef.current && (val === 'kg' || val === 'lbs')) {
         setWeightUnit(val);
       }
     }).catch(() => {
@@ -28,6 +31,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const toggleWeightUnit = useCallback(() => {
+    hasUserToggledRef.current = true;
     setWeightUnit((prev) => {
       const next: WeightUnit = prev === 'lbs' ? 'kg' : 'lbs';
       setPreference('weightUnit', next).catch(() => {
