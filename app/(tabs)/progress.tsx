@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 
@@ -25,10 +25,6 @@ export default function ProgressScreen() {
     const data = await getMuscleGroupStats();
     setStats(data);
   }, [refreshXP]);
-
-  useEffect(() => {
-    loadStats();
-  }, [loadStats]);
 
   useFocusEffect(
     useCallback(() => {

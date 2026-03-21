@@ -149,14 +149,25 @@ export async function getTotalXP(): Promise<number> {
 
 export async function addXP(amount: number): Promise<number> {
   const db = await getDb();
-  const current = await getPreference('user_xp');
-  const newXP = (parseInt(current ?? '0', 10) || 0) + amount;
+
+  // Sanitize: must be a finite, non-negative integer.
+  let safeAmount = Number.isFinite(amount) ? amount : 0;
+  if (safeAmount < 0) safeAmount = 0;
+  safeAmount = Math.floor(safeAmount);
+
+  // Atomic increment — no JS read-modify-write race condition.
   await db.runAsync(
-    'INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value',
-    'user_xp',
-    String(newXP),
+    `INSERT INTO settings (key, value)
+       VALUES ('user_xp', CAST(? AS TEXT))
+       ON CONFLICT(key) DO UPDATE SET
+         value = CAST(
+           CAST(COALESCE(value, '0') AS INTEGER) +
+           CAST(excluded.value AS INTEGER)
+         AS TEXT)`,
+    String(safeAmount),
   );
-  return newXP;
+
+  return getTotalXP();
 }
 
 export async function getPreference(key: string): Promise<string | null> {

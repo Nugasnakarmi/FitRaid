@@ -17,7 +17,8 @@ export function computeLevel(totalXP: number): number {
 
 /** Total XP required to *reach* the given level (1-indexed). */
 export function xpForLevel(level: number): number {
-  return (level - 1) * (level - 1) * 100;
+  const clampedLevel = Math.max(1, level);
+  return (clampedLevel - 1) * (clampedLevel - 1) * 100;
 }
 
 /** Snapshot of the player's progress within the current level. */
@@ -30,11 +31,13 @@ export type XPProgress = {
 };
 
 export function getXPProgress(totalXP: number): XPProgress {
-  const level = computeLevel(totalXP);
+  const clampedTotalXP = Math.max(0, totalXP);
+  const level = computeLevel(clampedTotalXP);
   const currentLevelXP = xpForLevel(level);
   const nextLevelXP = xpForLevel(level + 1);
   const range = nextLevelXP - currentLevelXP;
-  const fraction = range > 0 ? (totalXP - currentLevelXP) / range : 1;
+  const rawFraction = range > 0 ? (clampedTotalXP - currentLevelXP) / range : 1;
+  const fraction = Math.min(1, Math.max(0, rawFraction));
   return { level, currentLevelXP, nextLevelXP, fraction };
 }
 
