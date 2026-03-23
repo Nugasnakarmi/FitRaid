@@ -102,7 +102,7 @@ export const muscleGroups: MuscleGroup[] = [
       { name: 'Seated Cable Row', sets: 3, reps: '10-12', description: 'Pull a cable handle toward your midsection while seated.', images: exerciseImages('Seated_Cable_Rows') },
       { name: 'T-Bar Row', sets: 3, reps: '8-10', description: 'Row a loaded T-bar toward your chest while bent over.', images: exerciseImages('T-Bar_Row_with_Handle') },
       { name: 'Face Pull', sets: 3, reps: '12-15', description: 'Pull a rope cable toward your face to target upper back and rear delts.', images: exerciseImages('Face_Pull') },
-      { name: 'Assisted Pull Up', sets: 3, reps: '8-10', description: 'Perform pull-ups with machine or band assistance. Lower assistance weight is harder.', images: exerciseImages('Band_Assisted_Pull-Up') },
+      { name: 'Assisted Pull Up', sets: 3, reps: '8-10', description: 'Perform pull-ups with machine or band assistance; decrease assistance as you get stronger.', images: exerciseImages('Band_Assisted_Pull-Up') },
       { name: 'Cable V-Bar Seated Row', sets: 3, reps: '10-12', description: 'Pull a V-bar attachment toward your midsection while seated on a cable row.', images: exerciseImages('Seated_Cable_Rows') },
       { name: 'Cable Lat Pulldown', sets: 3, reps: '10-12', description: 'Pull a cable bar down to your upper chest targeting the lats.', images: exerciseImages('Close-Grip_Front_Lat_Pulldown') },
       { name: 'Cable Palm Rotational Row', sets: 3, reps: '10-12', description: 'Row a cable handle while rotating your palm during the pull.', images: exerciseImages('Seated_Cable_Rows') },
