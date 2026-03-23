@@ -19,6 +19,7 @@ export default function WorkoutSessionScreen() {
   );
 
   const group = muscleGroups.find((g) => g.id === id);
+  const groupId = group?.id ?? '';
 
   const renderExercise = useCallback(({ item: exercise, index }: { item: Exercise; index: number }) => (
     <ThemedView
@@ -48,11 +49,11 @@ export default function WorkoutSessionScreen() {
         </ThemedView>
       </ThemedView>
       <WorkoutLogger
-        muscleGroupId={group!.id}
+        muscleGroupId={groupId}
         exerciseName={exercise.name}
       />
     </ThemedView>
-  ), [tintColor, metaTextColor, group]);
+  ), [tintColor, metaTextColor, groupId]);
 
   if (!group) {
     return (
