@@ -1,11 +1,12 @@
-import { ScrollView, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
+import { useCallback } from 'react';
 
 import { ExerciseAnimation } from '@/components/exercise-animation';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { WorkoutLogger } from '@/components/workout-logger';
-import { muscleGroups } from '@/constants/workouts';
+import { muscleGroups, type Exercise } from '@/constants/workouts';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
 export default function WorkoutSessionScreen() {
@@ -18,6 +19,41 @@ export default function WorkoutSessionScreen() {
   );
 
   const group = muscleGroups.find((g) => g.id === id);
+  const groupId = group?.id ?? '';
+
+  const renderExercise = useCallback(({ item: exercise, index }: { item: Exercise; index: number }) => (
+    <ThemedView
+      style={[styles.exerciseCard, { borderColor: tintColor }]}>
+      <ThemedView style={styles.exerciseHeader}>
+        <ThemedText style={styles.exerciseIndex}>{index + 1}</ThemedText>
+        <ThemedText type="defaultSemiBold" style={styles.exerciseName}>
+          {exercise.name}
+        </ThemedText>
+      </ThemedView>
+      {exercise.images && (
+        <ExerciseAnimation images={exercise.images} />
+      )}
+      <ThemedText style={styles.exerciseDescription}>
+        {exercise.description}
+      </ThemedText>
+      <ThemedView style={styles.exerciseMeta}>
+        <ThemedView style={[styles.metaBadge, { backgroundColor: tintColor }]}>
+          <ThemedText style={[styles.metaText, { color: metaTextColor }]}>
+            {exercise.sets} sets
+          </ThemedText>
+        </ThemedView>
+        <ThemedView style={[styles.metaBadge, { backgroundColor: tintColor }]}>
+          <ThemedText style={[styles.metaText, { color: metaTextColor }]}>
+            {exercise.reps} reps
+          </ThemedText>
+        </ThemedView>
+      </ThemedView>
+      <WorkoutLogger
+        muscleGroupId={groupId}
+        exerciseName={exercise.name}
+      />
+    </ThemedView>
+  ), [tintColor, metaTextColor, groupId]);
 
   if (!group) {
     return (
@@ -28,50 +64,23 @@ export default function WorkoutSessionScreen() {
   }
 
   return (
-    <ScrollView style={[styles.scroll, { backgroundColor }]}>
-      <ThemedView style={styles.header}>
-        <ThemedText style={styles.icon}>{group.icon}</ThemedText>
-        <ThemedText type="title">{group.name}</ThemedText>
-        <ThemedText>{group.exercises.length} exercises</ThemedText>
-      </ThemedView>
-
-      {group.exercises.map((exercise, index) => (
-        <ThemedView
-          key={exercise.name}
-          style={[styles.exerciseCard, { borderColor: tintColor }]}>
-          <ThemedView style={styles.exerciseHeader}>
-            <ThemedText style={styles.exerciseIndex}>{index + 1}</ThemedText>
-            <ThemedText type="defaultSemiBold" style={styles.exerciseName}>
-              {exercise.name}
-            </ThemedText>
-          </ThemedView>
-          {exercise.images && (
-            <ExerciseAnimation images={exercise.images} />
-          )}
-          <ThemedText style={styles.exerciseDescription}>
-            {exercise.description}
-          </ThemedText>
-          <ThemedView style={styles.exerciseMeta}>
-            <ThemedView style={[styles.metaBadge, { backgroundColor: tintColor }]}>
-              <ThemedText style={[styles.metaText, { color: metaTextColor }]}>
-                {exercise.sets} sets
-              </ThemedText>
-            </ThemedView>
-            <ThemedView style={[styles.metaBadge, { backgroundColor: tintColor }]}>
-              <ThemedText style={[styles.metaText, { color: metaTextColor }]}>
-                {exercise.reps} reps
-              </ThemedText>
-            </ThemedView>
-          </ThemedView>
-          <WorkoutLogger
-            muscleGroupId={group.id}
-            exerciseName={exercise.name}
-          />
+    <FlatList
+      style={[styles.scroll, { backgroundColor }]}
+      data={group.exercises}
+      keyExtractor={(exercise) => exercise.name}
+      renderItem={renderExercise}
+      initialNumToRender={4}
+      maxToRenderPerBatch={3}
+      windowSize={5}
+      ListHeaderComponent={
+        <ThemedView style={styles.header}>
+          <ThemedText style={styles.icon}>{group.icon}</ThemedText>
+          <ThemedText type="title">{group.name}</ThemedText>
+          <ThemedText>{group.exercises.length} exercises</ThemedText>
         </ThemedView>
-      ))}
-
-      <ThemedView style={styles.footer} />
-    </ScrollView>
+      }
+      ListFooterComponent={<ThemedView style={styles.footer} />}
+    />
   );
 }
 
