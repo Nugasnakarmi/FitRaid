@@ -21,6 +21,10 @@ export default function HomeScreen() {
     { light: '#687076', dark: '#9BA1A6' },
     'text',
   );
+  const activeText = useThemeColor(
+    { light: '#fff', dark: '#11181C' },
+    'text',
+  );
 
   const level = xpProgress.level;
   const progressFraction = Math.min(1, Math.max(0, xpProgress.fraction));
@@ -60,7 +64,7 @@ export default function HomeScreen() {
               <ThemedText
                 style={[
                   styles.unitOptionText,
-                  { color: weightUnit === 'lbs' ? '#fff' : inactiveText },
+                  { color: weightUnit === 'lbs' ? activeText : inactiveText },
                 ]}>
                 lbs
               </ThemedText>
@@ -75,7 +79,7 @@ export default function HomeScreen() {
               <ThemedText
                 style={[
                   styles.unitOptionText,
-                  { color: weightUnit === 'kg' ? '#fff' : inactiveText },
+                  { color: weightUnit === 'kg' ? activeText : inactiveText },
                 ]}>
                 kg
               </ThemedText>
