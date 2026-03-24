@@ -61,7 +61,7 @@ export function RadarChart({
 
   // Data polygon
   const dataPolygonPts = data.map((d, i) => {
-    const r = maxR * Math.max(0.04, Math.min(1, d.value));
+    const r = maxR * Math.max(0, Math.min(1, d.value));
     const angle = -Math.PI / 2 + (2 * Math.PI * i) / n;
     return { x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) };
   });
@@ -76,7 +76,8 @@ export function RadarChart({
         <Polygon
           key={`grid-${i}`}
           points={pts}
-          fill={i === gridLevels - 1 ? `${accentColor}0a` : 'none'}
+          fill={accentColor}
+          fillOpacity={i === gridLevels - 1 ? 0.04 : 0}
           stroke={gridColor}
           strokeWidth={1}
         />
@@ -98,7 +99,8 @@ export function RadarChart({
       {/* Data area fill */}
       <Polygon
         points={toSvgPoints(dataPolygonPts)}
-        fill={`${accentColor}33`}
+        fill={accentColor}
+        fillOpacity={0.2}
         stroke={accentColor}
         strokeWidth={2.5}
         strokeLinejoin="round"

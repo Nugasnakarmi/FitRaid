@@ -58,14 +58,20 @@ export default function ProgressScreen() {
   const xpIntoLevel = totalXP - xpProgress.currentLevelXP;
   const xpNeededForLevel = xpProgress.nextLevelXP - xpProgress.currentLevelXP;
 
-  /** Build normalised radar data from stats. */
-  const radarData: RadarDataPoint[] = RADAR_GROUPS.map(({ label, ids }) => {
-    const total = ids.reduce((sum, id) => {
+  /** Build normalised radar data from stats.
+   *  Divide by the max category total so values stay in [0, 1]
+   *  even when a category aggregates multiple muscle group IDs. */
+  const categoryTotals = RADAR_GROUPS.map(({ ids }) =>
+    ids.reduce((sum, id) => {
       const s = stats.find((x) => x.muscleGroupId === id);
       return sum + (s?.logCount ?? 0);
-    }, 0);
-    return { label, value: maxSessions > 0 ? total / maxSessions : 0 };
-  });
+    }, 0),
+  );
+  const maxCategoryTotal = Math.max(1, ...categoryTotals);
+  const radarData: RadarDataPoint[] = RADAR_GROUPS.map(({ label }, i) => ({
+    label,
+    value: categoryTotals[i] / maxCategoryTotal,
+  }));
 
   const hasAnyData = stats.length > 0;
 
