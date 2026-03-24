@@ -8,13 +8,22 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
 
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarInactiveTintColor: Colors[colorScheme ?? 'light'].tabIconDefault,
         headerShown: false,
         tabBarButton: HapticTab,
+        tabBarStyle: isDark
+          ? {
+              backgroundColor: Colors.dark.background,
+              borderTopColor: Colors.dark.border,
+              borderTopWidth: 1,
+            }
+          : undefined,
       }}>
       <Tabs.Screen
         name="index"
